@@ -1,6 +1,6 @@
 class Service:
-    def __init__(self, kind, seconds, cash=None, account=None):
+    def __init__(self, kind, seconds, cash=None, bank=None):
         self.type = kind
         self.seconds = seconds
         self.cash = cash
-        self.account = account
+        self.bank = bank

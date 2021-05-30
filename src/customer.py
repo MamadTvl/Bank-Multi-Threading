@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from src.account import Account
+from account import Account
 
 
 class Customer:
@@ -17,7 +17,7 @@ class Customer:
 
     def get_stock(self, bank):
         for acc in self.accounts:
-            if acc.Bank == bank:
+            if acc.bank == bank:
                 return acc.stock
 
     def add_cash(self, cash):

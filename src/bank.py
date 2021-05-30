@@ -1,7 +1,4 @@
-def customer_account(customer):
-    for account in customer.accounts:
-        if account.Bank == Bank:
-            return account
+from service import Service
 
 
 class Bank:
@@ -15,41 +12,60 @@ class Bank:
         self.end_time = end_time
         self.stop = stop
 
-    def create_account(self, employee, customer, cash):
-        self.stock += cash
+    def create_account(self, employee, customer, service):
+        self.stock += service.cash
         self.customers.append(customer)
-        customer.add_account(cash, Bank, employee)
+        customer.add_account(service.cash, self, employee)
         return True
 
-    def withdraw(self, customer, cash):
+    def customer_account(self, customer):
+        for account in customer.accounts:
+            if account.bank == self:
+                return account
+
+    def withdraw(self, employee, customer, service):
         if customer in self.customers:
-            if customer.get_stock(Bank) >= cash:
-                customer.add_cash(cash)
-                customer_account(customer).stock -= cash
-                self.stock -= cash
-                print("%s get %s" % customer.name % cash)
+            if customer.get_stock(self) >= service.cash:
+                customer.add_cash(service.cash)
+                account = self.customer_account(customer)
+                account.stock -= service.cash
+                self.stock -= service.cash
+                print(f"{customer.name} get {service.cash}")
                 return True
             else:
                 print("Not enough money ")
         else:
             print("no account found")
+            print("add new service type: CREATE_ACCOUNT")
+            customer.services.append(service)
+            customer.services.append(
+                Service(
+                    kind='CREATE_ACCOUNT',
+                    seconds=1,
+                    cash=service.cash,
+                    bank=self
+                ))
+            return True
+
         return False
 
-    def deposit(self, customer, cash):
+    def deposit(self, employee, customer, service):
         if customer in self.customers:
-            customer.cash += cash
-            customer_account(customer).stock += cash
-            self.stock += cash
-            print("%s add %s" % customer.name % cash)
+            customer.cash += service.cash
+            self.customer_account(customer).stock += service.cash
+            self.stock += service.cash
+            print(f"{customer.name} deposit {service.cash}")
             return True
         else:
             print("no account found")
         return False
 
     def service(self, service, customer, employee=None):
+        result = False
         if service.type == 'DEPOSIT':
-            self.deposit(customer, service.cash)
+            result = self.deposit(employee, customer, service)
         elif service.type == 'WITHDRAW':
-            self.withdraw(customer, service.cash)
+            result = self.withdraw(employee, customer, service)
         elif service.type == 'CREATE_ACCOUNT':
-            self.create_account(employee, customer, service.cash)
+            result = self.create_account(employee, customer, service)
+        return result
