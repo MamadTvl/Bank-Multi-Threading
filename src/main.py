@@ -1,18 +1,10 @@
-# 4 bank, 4 boss, each bank has 4 employees and 4 customers,
-# 4 customer -> 2 of them want to create_account
-# 2 other want to DEPOSIT but has no account so moved to the end of queue
 from bank import Bank
 from boss import Boss
 from customer import Customer
 from employee import Employee
 from service import Service
+import threading
 
-
-# src.
-# src.
-# src.
-#  src.
-# src.
 
 def set_service(index):
     if index == 0:
@@ -42,6 +34,12 @@ def create_boss_data(unique_id, name, bank):
 def create_customer_data(unique_id, cash, name, accounts, services):
     return Customer(unique_id, cash, name, accounts, services)
 
+
+# 4 bank, 4 boss, each bank has 4 employees and 4 customers,
+# 4 customer -> 2 of them want to create_account
+# 2 other want to DEPOSIT but has no account so moved to the end of queue
+
+"""initial values"""
 
 banks = []
 for i in range(4):
@@ -105,5 +103,18 @@ for i in range(16):
             accounts=[],
         )
     )
-employees[0].add_customer(customers[0])
-employees[0].do_work()
+    customer_id += 1
+
+for i in range(16):
+    employees[i].add_customer(customers[i])
+
+threads = []
+
+for employee in employees:
+    thread = threading.Thread(target=employee.do_work)
+    thread.start()
+    threads.append(thread)
+
+for thread in threads:
+    thread.join()
+

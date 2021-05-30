@@ -13,6 +13,9 @@ class Bank:
         self.stop = stop
 
     def create_account(self, employee, customer, service):
+        if customer in self.customers:
+            print('Already Has account')
+            return False
         self.stock += service.cash
         self.customers.append(customer)
         customer.add_account(service.cash, self, employee)
@@ -52,7 +55,8 @@ class Bank:
     def deposit(self, employee, customer, service):
         if customer in self.customers:
             customer.cash += service.cash
-            self.customer_account(customer).stock += service.cash
+            account = self.customer_account(customer)
+            account.stock += service.cash
             self.stock += service.cash
             print(f"{customer.name} deposit {service.cash}")
             return True
