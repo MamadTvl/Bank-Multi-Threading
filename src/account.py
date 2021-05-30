@@ -1,4 +1,4 @@
-class account:
+class Account:
     def __init__(self, bank, owner, stock, employee, date):
         self.bank = bank
         self.owner = owner

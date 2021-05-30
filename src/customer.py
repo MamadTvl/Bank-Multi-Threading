@@ -1,22 +1,23 @@
 from datetime import datetime
 
-from account import account
+from src.account import Account
 
 
-class customer:
-    def __init__(self, unique_id, cash, name, accounts):
+class Customer:
+    def __init__(self, unique_id, cash, name, accounts, services):
         self.id = unique_id
         self.cash = cash
         self.name = name
         self.accounts = accounts
+        self.services = services
 
     def add_account(self, cash, bank, employee):
         self.cash -= cash
-        self.accounts.append(account(bank, customer, cash, employee, datetime))
+        self.accounts.append(Account(bank, self, cash, employee, datetime))
 
     def get_stock(self, bank):
         for acc in self.accounts:
-            if acc.bank == bank:
+            if acc.Bank == bank:
                 return acc.stock
 
     def add_cash(self, cash):
