@@ -37,11 +37,9 @@ def create_customer_data(unique_id, cash, name, accounts, services):
     return Customer(unique_id, cash, name, accounts, services)
 
 
-# 4 bank, 4 boss, each bank has 4 employees and 4 customers,
-# 4 customer -> 2 of them want to create_account
-# 2 other want to DEPOSIT but has no account so moved to the end of queue
+# 4 bank, 4 boss, each bank has 4 employees and 16 customers,
 
-"""initial values"""
+""" start of initial values"""
 
 banks = []
 for i in range(4):
@@ -53,7 +51,7 @@ for i in range(4):
             customers=[],
             stock=0,
             start_time=time.time(),
-            end_time=7,
+            end_time=60,
             stop=False,
         )
     )
@@ -95,7 +93,7 @@ for i in range(4):
 
 customer_id = 43100
 customers = []
-for i in range(16):
+for i in range(64):
     customers.append(
         create_customer_data(
             unique_id=customer_id,
@@ -112,16 +110,22 @@ for customer in customers:
         if service.type == 'DEPOSIT':
             rand_index = 0
             while True:
-                rand_index = random.randrange(0, 16)
+                rand_index = random.randrange(0, 64)
                 if customers[rand_index] != customer:
                     break
             service.to = customers[rand_index]
         customer.add_service(service)
 
-for i in range(16):
-    employees[i].add_customer(customers[i])
+customer_index = 0
+for employee in employees:
+    slice_customers = customers[customer_index:customer_index + 4]
+    for i in range(4):
+        employee.add_customer(slice_customers[i])
+    customer_index += 4
 
 start_time = time.time()
+
+""" end of initial values"""
 
 
 def stop_working(seconds, boss):
@@ -129,7 +133,7 @@ def stop_working(seconds, boss):
     timer.start()
 
 
-bank_timer = [5, 8, 12, 20]
+bank_timer = [5, 12, 24, 1000]
 
 for i in range(4):
     stop_working(bank_timer[i], bosses[i])
@@ -144,4 +148,4 @@ for employee in employees:
 for thread in threads:
     thread.join()
 
-print(f'processes ended in {str(time.time() - start_time).format(2)} seconds')
+print(f'processes ended in {round(time.time() - start_time, 2)} seconds')
