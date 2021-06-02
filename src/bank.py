@@ -25,7 +25,10 @@ class Bank:
         for account in customer.accounts:
             if account.bank == self:
                 return account
-        return customer.accounts[0]
+        if len(customer.accounts) != 0:
+            return customer.accounts[0]
+        else:
+            return None
 
     def withdraw(self, employee, customer, service):
         if customer in self.customers:
@@ -54,17 +57,20 @@ class Bank:
         return False
 
     def deposit(self, employee, customer, service):
-        if customer in self.customers:
-            customer.cash -= service.cash
-            service.to.cash += service.cash
-            account = self.customer_account(service.to)
-            account.stock += service.cash
-            account.bank.stock += service.cash
-            print(f"{customer.name} deposit {service.cash} to {service.to.name} "
-                  f"| from bank: {self.id} to bank: {account.bank.id}")
-            return True
+        if len(service.to.accounts) != 0:
+            if customer in self.customers:
+                customer.cash -= service.cash
+                service.to.cash += service.cash
+                account = self.customer_account(service.to)
+                account.stock += service.cash
+                account.bank.stock += service.cash
+                print(f"{customer.name} deposit {service.cash} to {service.to.name} "
+                      f"| from bank: {self.id} to bank: {account.bank.id}")
+                return True
+            else:
+                print(f"no account found | bank: {self.id}")
         else:
-            print(f"no account found | bank: {self.id}")
+            print(f'customer {service.to.name} has no account to DEPOSIT')
         return False
 
     def service(self, service, customer, employee=None):

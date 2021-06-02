@@ -1,5 +1,4 @@
 import random
-
 from bank import Bank
 from boss import Boss
 from customer import Customer
@@ -52,8 +51,8 @@ for i in range(4):
             employees=[],
             customers=[],
             stock=0,
-            start_time=8,
-            end_time=16,
+            start_time=0,
+            end_time=11,
             stop=False,
         )
     )
@@ -121,6 +120,17 @@ for customer in customers:
 for i in range(16):
     employees[i].add_customer(customers[i])
 
+
+def stop_working(seconds, boss):
+    timer = threading.Timer(seconds, boss.end_of_working_hour)
+    timer.start()
+
+
+bank_timer = [5, 8, 12, 20]
+
+for i in range(4):
+    stop_working(bank_timer[i], bosses[i])
+
 threads = []
 
 for employee in employees:
@@ -130,4 +140,3 @@ for employee in employees:
 
 for thread in threads:
     thread.join()
-
