@@ -11,6 +11,9 @@ class Customer:
         self.accounts = accounts
         self.services = services
 
+    def add_service(self, service):
+        self.services.append(service)
+
     def add_account(self, cash, bank, employee):
         self.cash -= cash
         self.accounts.append(Account(bank, self, cash, employee, datetime))

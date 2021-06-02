@@ -14,7 +14,7 @@ class Bank:
 
     def create_account(self, employee, customer, service):
         if customer in self.customers:
-            print('Already Has account')
+            print(f'Already Has account | bank: {self.id}')
             return False
         self.stock += service.cash
         self.customers.append(customer)
@@ -25,6 +25,7 @@ class Bank:
         for account in customer.accounts:
             if account.bank == self:
                 return account
+        return customer.accounts[0]
 
     def withdraw(self, employee, customer, service):
         if customer in self.customers:
@@ -36,10 +37,10 @@ class Bank:
                 print(f"{customer.name} get {service.cash}")
                 return True
             else:
-                print("Not enough money ")
+                print(f"Not enough money | bank: {self.id}")
         else:
-            print("no account found")
-            print("add new service type: CREATE_ACCOUNT")
+            print(f"no account found | bank: {self.id}")
+            print(f"add new service type: CREATE_ACCOUNT | bank: {self.id}")
             customer.services.append(service)
             customer.services.append(
                 Service(
@@ -54,14 +55,16 @@ class Bank:
 
     def deposit(self, employee, customer, service):
         if customer in self.customers:
-            customer.cash += service.cash
-            account = self.customer_account(customer)
+            customer.cash -= service.cash
+            service.to.cash += service.cash
+            account = self.customer_account(service.to)
             account.stock += service.cash
-            self.stock += service.cash
-            print(f"{customer.name} deposit {service.cash}")
+            account.bank.stock += service.cash
+            print(f"{customer.name} deposit {service.cash} to {service.to.name} "
+                  f"| from bank: {self.id} to bank: {account.bank.id}")
             return True
         else:
-            print("no account found")
+            print(f"no account found | bank: {self.id}")
         return False
 
     def service(self, service, customer, employee=None):

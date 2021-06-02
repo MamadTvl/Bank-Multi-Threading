@@ -1,3 +1,5 @@
+import random
+
 from bank import Bank
 from boss import Boss
 from customer import Customer
@@ -10,7 +12,7 @@ def set_service(index):
     if index == 0:
         return {'kind': 'CREATE_ACCOUNT', 'seconds': 1, 'cash': 2000}
     elif index == 1:
-        return {'kind': 'DEPOSIT', 'seconds': 5, 'cash': 1000}
+        return {'kind': 'DEPOSIT', 'seconds': 5, 'cash': 1000, 'to': None}
     elif index == 2:
         return {'kind': 'WITHDRAW', 'seconds': 3, 'cash': 500}
 
@@ -99,11 +101,22 @@ for i in range(16):
             unique_id=customer_id,
             cash=10000,
             name=f'Mr. {customer_id}',
-            services=services,
+            services=[],
             accounts=[],
         )
     )
     customer_id += 1
+
+for customer in customers:
+    for service in services:
+        if service.type == 'DEPOSIT':
+            rand_index = 0
+            while True:
+                rand_index = random.randrange(0, 16)
+                if customers[rand_index] != customer:
+                    break
+            service.to = customers[rand_index]
+        customer.add_service(service)
 
 for i in range(16):
     employees[i].add_customer(customers[i])
