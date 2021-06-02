@@ -1,6 +1,6 @@
-import time
 import random
 from queue import Queue
+import time
 
 
 class Employee(Queue):
@@ -17,14 +17,22 @@ class Employee(Queue):
         self.queue.append(customer)
 
     def do_work(self):
+        is_bank_closed = time.time() - self.bank.start_time >= self.bank.end_time
         print(f'{self.color}*****--------- start queue | Employee: {self.name}, id: {self.id} from bank: {self.bank.id} ---------*****')
         while self.queue:
+            if is_bank_closed:
+                print(f'work time is ended - bank: {self.bank.id} | massage from employee: {self.name}')
+                break
             if self.bank.stop:
                 print(f'{self.bank.boss.name}(Boss) Closed The Bank-{self.bank.id} | massage from employee: {self.name}')
                 break
             customer = self.queue.pop()
             seconds = 0
             while customer.services:
+                is_bank_closed = time.time() - self.bank.start_time >= self.bank.end_time
+                if is_bank_closed:
+                    print(f'work time is ended - bank: {self.bank.id} | massage from employee: {self.name}')
+                    break
                 if self.bank.stop:
                     break
                 service = customer.services.pop()

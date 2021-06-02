@@ -5,6 +5,7 @@ from customer import Customer
 from employee import Employee
 from service import Service
 import threading
+import time
 
 
 def set_service(index):
@@ -51,8 +52,8 @@ for i in range(4):
             employees=[],
             customers=[],
             stock=0,
-            start_time=0,
-            end_time=11,
+            start_time=time.time(),
+            end_time=7,
             stop=False,
         )
     )
@@ -120,6 +121,8 @@ for customer in customers:
 for i in range(16):
     employees[i].add_customer(customers[i])
 
+start_time = time.time()
+
 
 def stop_working(seconds, boss):
     timer = threading.Timer(seconds, boss.end_of_working_hour)
@@ -140,3 +143,5 @@ for employee in employees:
 
 for thread in threads:
     thread.join()
+
+print(f'processes ended in {str(time.time() - start_time).format(2)} seconds')
